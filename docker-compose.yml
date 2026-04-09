@@ -1,0 +1,40 @@
+services:
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.10
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    networks:
+      - accounting-network
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: idgen
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - accounting-network
+
+  id-service:
+    build: .
+    depends_on:
+      - etcd
+      - mysql
+    ports:
+      - "9090:9090"
+    networks:
+      - accounting-network
+
+networks:
+  accounting-network:
+    external: true
+
+volumes:
+  etcd-data:
+  mysql-data:
