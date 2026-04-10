@@ -40,7 +40,7 @@ func main() {
 	log.Println("start server")
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{"accounting-etcd:2379"},
-		DialTimeout: 5 * time.Second,
+		DialTimeout: 60 * time.Second,
 	})
 	if err != nil {
 		log.Println("etcd connect failed, fallback to local:", err)

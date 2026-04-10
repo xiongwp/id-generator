@@ -14,7 +14,7 @@ func Register(cli *clientv3.Client) int64 {
 	for i := 0; i < 10; i++ {
 		key := fmt.Sprintf("/snowflake/%d", i)
 		log.Println("key:", key)
-		lease, err := cli.Grant(context.Background(), 5)
+		lease, err := cli.Grant(context.Background(), 30)
 		if err != nil {
 			log.Println("grant failed:", err)
 			continue
