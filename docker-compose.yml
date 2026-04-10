@@ -1,24 +1,4 @@
 
-x-mysql-common: &mysql-common
-  image: mysql:8.0
-  command: >
-    --default-authentication-plugin=mysql_native_password
-    --character-set-server=utf8mb4
-    --collation-server=utf8mb4_unicode_ci
-    --max_connections=500
-    --innodb_buffer_pool_size=256M
-  environment:
-    MYSQL_ROOT_PASSWORD: password
-  healthcheck:
-    test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppassword"]
-    interval: 15s
-    timeout: 5s
-    retries: 40
-    start_period: 600s
-  networks:
-    - accounting-network
-
-
 
 
 services:
@@ -32,17 +12,31 @@ services:
       - accounting-network
 
   mysql:
-    <<: *mysql-common
+    image: mysql:8.0
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max_connections=500
+      --innodb_buffer_pool_size=256M
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppassword"]
+      interval: 15s
+      timeout: 5s
+      retries: 40
+      start_period: 600s
+    networks:
+      - accounting-network
     container_name: mysql-generator
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: idgen
+        MYSQL_ROOT_PASSWORD: password
+        MYSQL_DATABASE: idgen
     ports:
       - "3318:3306"
     volumes:
       - mysql-data:/var/lib/mysql
-    networks:
-      - accounting-network
+      - ./internal/database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
 
   id-service:
     build: .
