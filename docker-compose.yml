@@ -4,7 +4,7 @@ services:
     networks:
       - accounting-network
 
-  mysql-idgen:
+  mysql:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: root
