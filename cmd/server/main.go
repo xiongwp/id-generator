@@ -8,15 +8,12 @@ import (
 
 	"log"
 	"net"
-	"net/http"
 
 	"github.com/xiongwp/id-generator/internal/generator"
-	"github.com/xiongwp/id-generator/internal/metrics"
 	"github.com/xiongwp/id-generator/internal/segment"
 	"github.com/xiongwp/id-generator/internal/service"
 	"github.com/xiongwp/id-generator/internal/worker"
 
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 
@@ -29,23 +26,26 @@ func main() {
 	// ================================
 	// 1️⃣ 初始化 metrics
 	// ================================
-	metrics.Init()
+	//metrics.Init()
 
 	go func() {
-		http.Handle("/metrics", promhttp.Handler())
+		//http.Handle("/metrics", promhttp.Handler())
 		log.Println("metrics server at :2112")
-		log.Fatal(http.ListenAndServe(":2112", nil))
+		//log.Fatal(http.ListenAndServe(":2112", nil))
 	}()
 
 	// ================================
 	// 2️⃣ 初始化 etcd（workerId）
 	// ================================
+	log.Println("start server")
 	cli, err := clientv3.New(clientv3.Config{
-		Endpoints:   []string{"account-etcd:2379"},
+		Endpoints:   []string{"accounting-etcd:2379"},
 		DialTimeout: 5 * time.Second,
 	})
 	if err != nil {
 		log.Println("etcd connect failed, fallback to local:", err)
+	} else {
+		log.Println("start etcd client successfully")
 	}
 
 	workerID := worker.Register(cli)
@@ -63,6 +63,8 @@ func main() {
 	db, err := NewDB()
 	if err != nil {
 		log.Fatal("failed to connect to database:", err)
+	} else {
+		log.Println("success started to connect database")
 	}
 	// ================================
 	// 5️⃣ 初始化 segment buffer
@@ -94,12 +96,12 @@ func main() {
 	}
 }
 func NewDB() (*gorm.DB, error) {
-	dsn := "root:password@tcp(mysql:3306)/idgen?charset=utf8mb4&parseTime=true&loc=Local&timeout=3s&readTimeout=3s&writeTimeout=3s"
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		PrepareStmt: true, // ✅ 提升性能（ID服务很适合）
-	})
+	dsn := "root:password@tcp(mysql-generator:3306)/idgen?charset=utf8mb4&parseTime=True&loc=Local&tls=false"
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
+		log.Println("failed to connect database:", err)
 		return nil, err
 	}
 

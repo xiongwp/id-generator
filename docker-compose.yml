@@ -11,12 +11,6 @@ services:
       --collation-server=utf8mb4_unicode_ci
       --max_connections=500
       --innodb_buffer_pool_size=256M
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppassword"]
-      interval: 15s
-      timeout: 5s
-      retries: 40
-      start_period: 600s
     networks:
       - accounting-network
     container_name: mysql-generator
@@ -33,7 +27,7 @@ services:
   id-service:
     build: .
     environment:
-      ETCD_ENDPOINT: account-etcd:2379
+      ETCD_ENDPOINT: accounting-etcd:2379
     depends_on:
       - mysql
     ports:
