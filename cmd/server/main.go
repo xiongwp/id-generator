@@ -57,16 +57,10 @@ func main() {
 	// ================================
 	// 4️⃣ 初始化 DB（segment）
 	// ================================
-	dsn := "root:root@tcp(mysql:3318)/idgen?charset=utf8mb4&parseTime=True&loc=Local"
-
-	db, err := sql.Open("mysql", dsn)
+	db, err := NewDB()
 	if err != nil {
-		log.Fatal("mysql connect failed:", err)
+		log.Fatal("failed to connect to database:", err)
 	}
-
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(5)
-
 	// ================================
 	// 5️⃣ 初始化 segment buffer
 	// ================================
@@ -95,4 +89,25 @@ func main() {
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func NewDB() (*sql.DB, error) {
+	dsn := "root:password@tcp(mysql:3318)/id_db?charset=utf8mb4&parseTime=true&loc=Local&allowPublicKeyRetrieval=true"
+
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	// ✅ 必须 Ping（sql.Open 不会真正连接）
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
+	// ✅ 连接池（非常重要）
+	db.SetMaxOpenConns(50)
+	db.SetMaxIdleConns(10)
+	db.SetConnMaxLifetime(1 * time.Hour)
+
+	return db, nil
 }
