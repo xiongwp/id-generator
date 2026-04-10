@@ -10,7 +10,7 @@ type Buffer struct {
 	current int64
 	max     int64
 	next    *Buffer
-	db      *sql.DB
+	DB      *sql.DB
 }
 
 func (b *Buffer) Next() int64 {
@@ -20,7 +20,7 @@ func (b *Buffer) Next() int64 {
 	if b.current >= b.max {
 		if b.next != nil {
 			*b = *b.next
-			go b.load()
+			go b.Load()
 		} else {
 			return -1
 		}
@@ -30,12 +30,12 @@ func (b *Buffer) Next() int64 {
 	return b.current
 }
 
-func (b *Buffer) load() {
-	start, end, _ := Fetch(b.db)
+func (b *Buffer) Load() {
+	start, end, _ := Fetch(b.DB)
 
 	b.next = &Buffer{
 		current: start,
 		max:     end,
-		db:      b.db,
+		DB:      b.DB,
 	}
 }

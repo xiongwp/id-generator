@@ -7,17 +7,17 @@ import (
 	"net/http"
 	"time"
 
-	"id-generator/internal/generator"
-	"id-generator/internal/metrics"
-	"id-generator/internal/segment"
-	"id-generator/internal/service"
-	"id-generator/internal/worker"
+	"github.com/xiongwp/id-generator/internal/generator"
+	"github.com/xiongwp/id-generator/internal/metrics"
+	"github.com/xiongwp/id-generator/internal/segment"
+	"github.com/xiongwp/id-generator/internal/service"
+	"github.com/xiongwp/id-generator/internal/worker"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 
-	import pb "github.com/xiongwp/id-generator/internal/proto"
+	pb "github.com/xiongwp/id-generator/internal/proto"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -86,7 +86,7 @@ func main() {
 	grpcServer := grpc.NewServer()
 
 	pb.RegisterIDServiceServer(grpcServer, &service.Server{
-		SF:  sf,
+		Sf:  sf,
 		Seg: buf,
 	})
 
