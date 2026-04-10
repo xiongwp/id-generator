@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v7.34.1
-// source: internal/proto/id.proto
+// source: id.proto
 
 package proto
 
@@ -23,13 +23,14 @@ const (
 
 type IDRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *IDRequest) Reset() {
 	*x = IDRequest{}
-	mi := &file_internal_proto_id_proto_msgTypes[0]
+	mi := &file_id_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -41,7 +42,7 @@ func (x *IDRequest) String() string {
 func (*IDRequest) ProtoMessage() {}
 
 func (x *IDRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_proto_id_proto_msgTypes[0]
+	mi := &file_id_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -54,7 +55,14 @@ func (x *IDRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IDRequest.ProtoReflect.Descriptor instead.
 func (*IDRequest) Descriptor() ([]byte, []int) {
-	return file_internal_proto_id_proto_rawDescGZIP(), []int{0}
+	return file_id_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *IDRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
 }
 
 type IDResponse struct {
@@ -66,7 +74,7 @@ type IDResponse struct {
 
 func (x *IDResponse) Reset() {
 	*x = IDResponse{}
-	mi := &file_internal_proto_id_proto_msgTypes[1]
+	mi := &file_id_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -78,7 +86,7 @@ func (x *IDResponse) String() string {
 func (*IDResponse) ProtoMessage() {}
 
 func (x *IDResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_proto_id_proto_msgTypes[1]
+	mi := &file_id_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -91,7 +99,7 @@ func (x *IDResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IDResponse.ProtoReflect.Descriptor instead.
 func (*IDResponse) Descriptor() ([]byte, []int) {
-	return file_internal_proto_id_proto_rawDescGZIP(), []int{1}
+	return file_id_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *IDResponse) GetId() int64 {
@@ -110,7 +118,7 @@ type BatchRequest struct {
 
 func (x *BatchRequest) Reset() {
 	*x = BatchRequest{}
-	mi := &file_internal_proto_id_proto_msgTypes[2]
+	mi := &file_id_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -122,7 +130,7 @@ func (x *BatchRequest) String() string {
 func (*BatchRequest) ProtoMessage() {}
 
 func (x *BatchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_proto_id_proto_msgTypes[2]
+	mi := &file_id_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -135,7 +143,7 @@ func (x *BatchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BatchRequest.ProtoReflect.Descriptor instead.
 func (*BatchRequest) Descriptor() ([]byte, []int) {
-	return file_internal_proto_id_proto_rawDescGZIP(), []int{2}
+	return file_id_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *BatchRequest) GetCount() int32 {
@@ -154,7 +162,7 @@ type BatchResponse struct {
 
 func (x *BatchResponse) Reset() {
 	*x = BatchResponse{}
-	mi := &file_internal_proto_id_proto_msgTypes[3]
+	mi := &file_id_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -166,7 +174,7 @@ func (x *BatchResponse) String() string {
 func (*BatchResponse) ProtoMessage() {}
 
 func (x *BatchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_proto_id_proto_msgTypes[3]
+	mi := &file_id_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -179,7 +187,7 @@ func (x *BatchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BatchResponse.ProtoReflect.Descriptor instead.
 func (*BatchResponse) Descriptor() ([]byte, []int) {
-	return file_internal_proto_id_proto_rawDescGZIP(), []int{3}
+	return file_id_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *BatchResponse) GetIds() []int64 {
@@ -189,12 +197,13 @@ func (x *BatchResponse) GetIds() []int64 {
 	return nil
 }
 
-var File_internal_proto_id_proto protoreflect.FileDescriptor
+var File_id_proto protoreflect.FileDescriptor
 
-const file_internal_proto_id_proto_rawDesc = "" +
+const file_id_proto_rawDesc = "" +
 	"\n" +
-	"\x17internal/proto/id.proto\x12\x02id\"\v\n" +
-	"\tIDRequest\"\x1c\n" +
+	"\bid.proto\x12\x02id\"$\n" +
+	"\tIDRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\"\x1c\n" +
 	"\n" +
 	"IDResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"$\n" +
@@ -207,25 +216,25 @@ const file_internal_proto_id_proto_rawDesc = "" +
 	"\x06GetIDs\x12\x10.id.BatchRequest\x1a\x11.id.BatchResponseB\x1dZ\x1bid-generator/internal/protob\x06proto3"
 
 var (
-	file_internal_proto_id_proto_rawDescOnce sync.Once
-	file_internal_proto_id_proto_rawDescData []byte
+	file_id_proto_rawDescOnce sync.Once
+	file_id_proto_rawDescData []byte
 )
 
-func file_internal_proto_id_proto_rawDescGZIP() []byte {
-	file_internal_proto_id_proto_rawDescOnce.Do(func() {
-		file_internal_proto_id_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_internal_proto_id_proto_rawDesc), len(file_internal_proto_id_proto_rawDesc)))
+func file_id_proto_rawDescGZIP() []byte {
+	file_id_proto_rawDescOnce.Do(func() {
+		file_id_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_id_proto_rawDesc), len(file_id_proto_rawDesc)))
 	})
-	return file_internal_proto_id_proto_rawDescData
+	return file_id_proto_rawDescData
 }
 
-var file_internal_proto_id_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_internal_proto_id_proto_goTypes = []any{
+var file_id_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_id_proto_goTypes = []any{
 	(*IDRequest)(nil),     // 0: id.IDRequest
 	(*IDResponse)(nil),    // 1: id.IDResponse
 	(*BatchRequest)(nil),  // 2: id.BatchRequest
 	(*BatchResponse)(nil), // 3: id.BatchResponse
 }
-var file_internal_proto_id_proto_depIdxs = []int32{
+var file_id_proto_depIdxs = []int32{
 	0, // 0: id.IDService.GetID:input_type -> id.IDRequest
 	2, // 1: id.IDService.GetIDs:input_type -> id.BatchRequest
 	1, // 2: id.IDService.GetID:output_type -> id.IDResponse
@@ -237,26 +246,26 @@ var file_internal_proto_id_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_internal_proto_id_proto_init() }
-func file_internal_proto_id_proto_init() {
-	if File_internal_proto_id_proto != nil {
+func init() { file_id_proto_init() }
+func file_id_proto_init() {
+	if File_id_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_proto_id_proto_rawDesc), len(file_internal_proto_id_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_id_proto_rawDesc), len(file_id_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_internal_proto_id_proto_goTypes,
-		DependencyIndexes: file_internal_proto_id_proto_depIdxs,
-		MessageInfos:      file_internal_proto_id_proto_msgTypes,
+		GoTypes:           file_id_proto_goTypes,
+		DependencyIndexes: file_id_proto_depIdxs,
+		MessageInfos:      file_id_proto_msgTypes,
 	}.Build()
-	File_internal_proto_id_proto = out.File
-	file_internal_proto_id_proto_goTypes = nil
-	file_internal_proto_id_proto_depIdxs = nil
+	File_id_proto = out.File
+	file_id_proto_goTypes = nil
+	file_id_proto_depIdxs = nil
 }

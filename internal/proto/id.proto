@@ -9,11 +9,15 @@ service IDService {
   rpc GetIDs (BatchRequest) returns (BatchResponse);
 }
 
-message IDRequest {}
+
+message IDRequest {
+  int64 user_id = 1; 
+}
 
 message IDResponse {
   int64 id = 1;
 }
+
 
 message BatchRequest {
   int32 count = 1;
