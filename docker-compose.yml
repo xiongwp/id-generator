@@ -2,14 +2,6 @@
 
 
 services:
-  etcd:
-    image: quay.io/coreos/etcd:v3.5.10
-    command: 
-      - /usr/local/bin/etcd
-      - --advertise-client-urls=http://etcd:2379
-      - --listen-client-urls=http://0.0.0.0:2379
-    networks:
-      - accounting-network
 
   mysql:
     image: mysql:8.0
@@ -40,8 +32,9 @@ services:
 
   id-service:
     build: .
+    environment:
+      ETCD_ENDPOINT: account-etcd:2379
     depends_on:
-      - etcd
       - mysql
     ports:
       - "9090:9090"

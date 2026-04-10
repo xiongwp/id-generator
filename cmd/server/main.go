@@ -41,7 +41,7 @@ func main() {
 	// 2️⃣ 初始化 etcd（workerId）
 	// ================================
 	cli, err := clientv3.New(clientv3.Config{
-		Endpoints:   []string{"etcd:2379"},
+		Endpoints:   []string{"account-etcd:2379"},
 		DialTimeout: 5 * time.Second,
 	})
 	if err != nil {
