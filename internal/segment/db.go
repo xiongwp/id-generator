@@ -1,21 +1,16 @@
 package segment
 
-import "database/sql"
+import (
+	"gorm.io/gorm"
+)
 
-func Fetch(db *sql.DB) (int64, error) {
-	tx, err := db.Begin()
-	if err != nil {
-		return 0, err
-	}
-	defer tx.Rollback()
-
+func Fetch(db *gorm.DB) (int64, error) {
 	var maxID int64
-	err = tx.QueryRow("SELECT max_id FROM segment LIMIT 1").Scan(&maxID)
-	if err != nil {
-		return 0, err
-	}
 
-	err = tx.Commit()
+	err := db.Transaction(func(tx *gorm.DB) error {
+		return tx.Raw("SELECT max_id FROM id_segment LIMIT 1").Scan(&maxID).Error
+	})
+
 	if err != nil {
 		return 0, err
 	}

@@ -1,9 +1,10 @@
 package segment
 
 import (
-	"database/sql"
 	"log"
 	"sync"
+
+	"gorm.io/gorm"
 )
 
 type Buffer struct {
@@ -11,7 +12,7 @@ type Buffer struct {
 	Current int64
 	max     int64
 	next    *Buffer
-	DB      *sql.DB
+	DB      *gorm.DB
 }
 
 func (b *Buffer) Next() int64 {

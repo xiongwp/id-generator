@@ -1,11 +1,14 @@
 package main
 
 import (
-	"database/sql"
+	"time"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+
 	"log"
 	"net"
 	"net/http"
-	"time"
 
 	"github.com/xiongwp/id-generator/internal/generator"
 	"github.com/xiongwp/id-generator/internal/metrics"
@@ -90,24 +93,31 @@ func main() {
 		log.Fatal(err)
 	}
 }
+func NewDB() (*gorm.DB, error) {
+	dsn := "root:password@tcp(mysql:3306)/idgen?charset=utf8mb4&parseTime=true&loc=Local&timeout=3s&readTimeout=3s&writeTimeout=3s"
 
-func NewDB() (*sql.DB, error) {
-	dsn := "root:password@tcp(mysql:3318)/id_db?charset=utf8mb4&parseTime=true&loc=Local&allowPublicKeyRetrieval=true"
-
-	db, err := sql.Open("mysql", dsn)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		PrepareStmt: true, // ✅ 提升性能（ID服务很适合）
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	// ✅ 必须 Ping（sql.Open 不会真正连接）
-	if err := db.Ping(); err != nil {
+	// 🔥 获取底层 sql.DB（连接池在这里配）
+	sqlDB, err := db.DB()
+	if err != nil {
 		return nil, err
 	}
 
-	// ✅ 连接池（非常重要）
-	db.SetMaxOpenConns(50)
-	db.SetMaxIdleConns(10)
-	db.SetConnMaxLifetime(1 * time.Hour)
+	// ✅ 连接池（关键）
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetMaxIdleConns(20)
+	sqlDB.SetConnMaxLifetime(30 * time.Minute)
+
+	// ✅ 必须 Ping（和你原来一样）
+	if err := sqlDB.Ping(); err != nil {
+		return nil, err
+	}
 
 	return db, nil
 }
