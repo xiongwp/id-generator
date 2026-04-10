@@ -1,18 +1,19 @@
-# 构建阶段
-FROM golang:1.21-alpine AS builder
+FROM golang:1.26.1 AS builder
 
 WORKDIR /app
+
+# 利用缓存
+COPY go.mod go.sum ./
+RUN go mod tidy
+
 COPY . .
 
-RUN go mod tidy
 RUN go build -o id-server ./cmd/server
 
-# 运行阶段（更小更安全）
-FROM alpine:latest
+# 运行镜像（更小）
+FROM debian:bookworm-slim
 
 WORKDIR /app
 COPY --from=builder /app/id-server .
-
-EXPOSE 9090
 
 CMD ["./id-server"]
