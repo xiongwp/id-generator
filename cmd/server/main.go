@@ -57,7 +57,7 @@ func main() {
 	// ================================
 	// 4️⃣ 初始化 DB（segment）
 	// ================================
-	dsn := "root:root@tcp(mysql:3306)/idgen?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:root@tcp(mysql:3318)/idgen?charset=utf8mb4&parseTime=True&loc=Local"
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {

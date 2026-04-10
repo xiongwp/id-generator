@@ -2,12 +2,13 @@ package segment
 
 import (
 	"database/sql"
+	"log"
 	"sync"
 )
 
 type Buffer struct {
 	mu      sync.Mutex
-	current int64
+	Current int64
 	max     int64
 	next    *Buffer
 	DB      *sql.DB
@@ -17,7 +18,7 @@ func (b *Buffer) Next() int64 {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	if b.current >= b.max {
+	if b.Current >= b.max {
 		if b.next != nil {
 			*b = *b.next
 			go b.Load()
@@ -26,16 +27,14 @@ func (b *Buffer) Next() int64 {
 		}
 	}
 
-	b.current++
-	return b.current
+	b.Current++
+	return b.Current
 }
 
 func (b *Buffer) Load() {
-	start, end, _ := Fetch(b.DB)
-
-	b.next = &Buffer{
-		current: start,
-		max:     end,
-		DB:      b.DB,
+	id, err := Fetch(b.DB)
+	if err != nil {
+		log.Fatalf("fetch segment failed: %v", err)
 	}
+	b.Current = id
 }

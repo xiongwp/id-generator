@@ -2,17 +2,23 @@ package segment
 
 import "database/sql"
 
-func Fetch(db *sql.DB) (start, end int64, err error) {
-	tx, _ := db.Begin()
+func Fetch(db *sql.DB) (int64, error) {
+	tx, err := db.Begin()
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback()
 
-	var max, step int64
-	tx.QueryRow("SELECT max_id, step FROM id_segment WHERE biz_tag='order' FOR UPDATE").
-		Scan(&max, &step)
+	var maxID int64
+	err = tx.QueryRow("SELECT max_id FROM segment LIMIT 1").Scan(&maxID)
+	if err != nil {
+		return 0, err
+	}
 
-	newMax := max + step
-	tx.Exec("UPDATE id_segment SET max_id=?", newMax)
+	err = tx.Commit()
+	if err != nil {
+		return 0, err
+	}
 
-	tx.Commit()
-
-	return max, newMax, nil
+	return maxID, nil
 }
