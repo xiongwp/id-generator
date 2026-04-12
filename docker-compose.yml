@@ -1,0 +1,59 @@
+version: '3.8'
+
+# ─── ID Generator 服务组合 ──────────────────────────────────────────────────────
+#
+# 依赖说明：
+#   - mysql-idgen：本服务专用 MySQL，存储 leaf_alloc 号段分配表
+#   - accounting-etcd（外部）：与 accounting-system 共享 etcd，用于雪花 ID worker 注册
+#   - accounting-network（外部网络）：所有服务互联
+#
+# 启动方式：
+#   # 首次启动（需先创建外部网络）
+#   docker network create accounting-network
+#   docker-compose up -d
+
+services:
+  mysql-idgen:
+    image: mysql:8.0
+    container_name: mysql-idgen
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: idgen
+      MYSQL_CHARSET: utf8mb4
+    volumes:
+      - mysql-idgen-data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "3318:3306"
+    networks:
+      - accounting-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  id-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: id-generator
+    depends_on:
+      mysql-idgen:
+        condition: service_healthy
+    ports:
+      - "9090:9090"   # gRPC
+      - "9091:9091"   # Kitex (JSON/Thrift)
+    networks:
+      - accounting-network
+    restart: unless-stopped
+
+volumes:
+  mysql-idgen-data:
+
+networks:
+  accounting-network:
+    external: true
+    name: accounting-network

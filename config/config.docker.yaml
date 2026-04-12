@@ -1,0 +1,24 @@
+# ─── ID Generator Docker 部署配置 ─────────────────────────────────────────────
+
+server:
+  grpc_port: 9090
+  kitex_port: 9091
+
+database:
+  dsn: "root:password@tcp(mysql-idgen:3306)/idgen?charset=utf8mb4&parseTime=True&loc=Local"
+  max_open_conns: 100
+  max_idle_conns: 20
+  conn_max_lifetime: 3600
+
+etcd:
+  endpoints:
+    - "accounting-etcd:2379"
+  dial_timeout: 5s
+  worker_id: 0
+
+snowflake:
+  datacenter_id: 0
+  fallback_worker_id: 0
+
+segment:
+  load_factor: 0.9
